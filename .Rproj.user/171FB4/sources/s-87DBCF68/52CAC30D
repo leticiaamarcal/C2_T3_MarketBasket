@@ -1,0 +1,33 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1571754119993.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "52CAC30D",
+    "lastKnownWriteTime" : 7310028807570858028,
+    "last_content_update" : 1571754119993,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "4FA244FD",
+        "caption" : "Products",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=Products&cache_key=4FA244FD",
+        "displayedObservations" : "293983",
+        "environment" : "",
+        "expression" : "Products",
+        "object" : "Products",
+        "preview" : "0",
+        "totalObservations" : "293983",
+        "variables" : "7"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_dataframe"
+}

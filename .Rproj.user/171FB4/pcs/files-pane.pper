@@ -1,0 +1,9 @@
+{
+    "path" : "~/UbiqumR/C2_T3_marketBasket",
+    "sortOrder" : [
+        {
+            "ascending" : true,
+            "columnIndex" : 2
+        }
+    ]
+}
