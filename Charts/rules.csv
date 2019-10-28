@@ -1,0 +1,12 @@
+,rules,support,confidence,lift,count
+1,{Prynt_printer} => {Prynt_accessories},0.0013392,1,614.9411765,14
+2,{Prynt_accessories} => {Prynt_printer},0.0013392,0.823529412,614.9411765,14
+3,{Philips_other} => {Philips_accessories},0.002774058,0.69047619,41.48412698,29
+4,{QNAP_accessories} => {Western Digital_accessories},0.010330974,0.715231788,9.311373739,108
+5,{Synology_accessories} => {Western Digital_accessories},0.018174861,0.775510204,10.09611915,190
+6,"{My MW_accessories,Satechi_accessories} => {Apple_laptop}",0.001147886,0.705882353,14.19095023,12
+7,"{OWC_accessories,Service_service} => {Crucial_accessories}",0.001626172,0.62962963,8.835098185,17
+8,"{Samsung_accessories,Seagate_accessories} => {OWC_accessories}",0.001052229,0.611111111,4.933247533,11
+9,"{Apple_extended warranty,Otterbox_accessories} => {Apple_smartphone}",0.002200115,0.71875,10.84244228,23
+10,"{Apple_extended warranty,Griffin_accessories} => {Apple_smartphone}",0.001147886,0.666666667,10.05675806,12
+11,"{Apple_extended warranty,Satechi_accessories} => {Apple_laptop}",0.001913143,0.64516129,12.97022333,20
