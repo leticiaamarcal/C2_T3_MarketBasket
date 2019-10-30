@@ -1,0 +1,155 @@
+---
+title: "Learnings dplyr"
+author: "Letícia Marçal"
+date: "10/29/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = F, warning = F)
+```
+
+## dplyr
+
+```{r}
+library(dplyr)
+```
+
+DPLYR TUTORIAL http://genomicsclass.github.io/book/pages/dplyr_tutorial.html
+
+     1-	filter() -> selecionar/filtrar linhas
+
+     2-	arrange() -> reordenar linhas 
+
+     3-	select() -> selecionar colunas
+
+     4-	mutate() -> criar variáveis usando outras coluna (ex: multiplicar duas colunas, criando uma nova) 
+
+     5-	summarise() -> “resumir” valores 
+
+     6-	group by() -> agrupar linhas 
+
+     7-	count() -> checar número de colunas
+
+
+
+•	Você pode aplicar várias vezes a mesma função mais de uma vez para diferentes objetivos, na mesma ou em mais de uma coluna. Toda a informação vai junta dentro da função, separada por vírgula. Toda vez que trocar de função, usar %>%
+
+
+•	%>% significa "then"
+
+
+•	Atalho para %>% é ctrl + shift + m
+
+
+•	Saber o número de linhas de um dataset, há duas maneiras:
+```
+count(x = datasetName) 
+or
+datasetName %>% count()
+```
+
+
+•	Resumir a informação e encontrar a média de uma variável
+```
+objetectName <- datasetName %>% 
+summarise(.data = datasetName, mean(columnName))
+or
+summarise(mean(columnName))
+```
+
+
+•	Selecionar coluna
+```
+datasetName %>% select(columnName)
+```
+
+
+•	Selecionar nome da coluna/ selecionar colunas que começam com “sl”
+```
+datasetName %>% select(name)
+datasetName %>% select(starts_with("sl"))
+datasetName %>% select(name, starts_with("sl"))
+```
+
+
+•	Group_by() vem sempre junto de summarise(). Você agrupa e depois visualiza o resultado. Podem ser média (mean), soma(sum) e asism por diante. 
+
+```
+objectName <- datasetName %>%
+        group_by(columnName) %>% 
+summarise(nameYouChoose = mean(columnName))
+```
+
+
+•	Filtrar NA
+```
+objetectName <- datasetName %>%
+  filter(!is.na(columnName)) 
+```
+
+
+•	Filtrar valores (intervalos)
+```
+objetectName <- datasetName %>%
+  filter(btween(columnName, 2, 9)
+or
+filter(columnName >= 2, columnName <= 19)
+```
+
+
+•	Filtrar para eliminar informação que não quer
+```
+objetectName <- datasetName %>%
+ filter(!columnName == "categoryInColumn") 
+ou
+filter(columnName != "categoryInColumn") 
+ou
+!conservation %in% "domesticated"
+filter (!columnName %in% "categoryInColumn")
+```
+
+
+•	Adcionar uma coluna nova, multiplicando duas outras
+```
+objetectName <- datasetName %>%
+  mutate(nameYouChoose = column1 * column2) %>% 
+ summarise(nameYouChoose2 = mean(nameYouChoose)) 
+```
+
+
+•	Adicionar uma coluna para contar o número de observações que estão naquela linha (levando em consideração que já usamos outras funções anteriormente que alteraram o tamanho do dataframe original –como group_by)
+```
+objetectName <- datasetName %>%
+          mutate(nameYouChoose = column1 * column2) %>% 
+         ummarise(nameYouChoose2 = mean(nameYouChoose), 
+          nameYouChoose3 = n())
+```
+
+
+•	Ordernar o dataframe por ordem decrescente do número de observações 
+
+```
+objetectName <- datasetName %>%
+          mutate(nameYouChoose = column1 * column2) %>% 
+         ummarise(nameYouChoose2 = mean(nameYouChoose),
+            numberRows = n()) %>%  
+            arrange(desc(numberRows)) 
+```
+
+
+•	Exemplo com as funções juntas
+
+```
+msleep %>% 
+  filter(sleep_total >= 2, sleep_total <= 19, 
+         conservation != "domesticated",
+         !is.na(vore),
+         !is.na(conservation))%>% 
+  mutate(mass_ratio = brainwt/bodywt)%>% 
+  group_by(vore) %>% 
+  summarise(mean_sleep = mean(sleep_total), 
+            mean_mass_ratio = mean(mass_ratio),
+            numberRows = n()) %>%  
+            arrange(desc(numberRows)) -> newDF
+```

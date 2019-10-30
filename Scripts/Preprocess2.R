@@ -126,11 +126,8 @@ trans@itemInfo$brand_category <- prod_brand_cat$brand_category
 
 trans_bran_category <- arules::aggregate(trans, trans@itemInfo$brand_category)
 
-rules <- apriori(trans_bran_category, 
-                 parameter = list(supp = 0.00001, conf = 0.4),
-                 appearance = list(rhs = c("Apple_laptop")))
-
-
+rules <- apriori(trans_bran_category, parameter = list(supp = 0.000001, conf = 0.3))
+                
 ruleExplorer(rules)
 
 #ver qual rule é mais forte (por lift, support ou confidence)

@@ -23,8 +23,7 @@ library(readr)
 
 Products <- read.csv("~/UbiqumR/C2_T3_MarketBasket/Data/Raw/lineitems_.csv", sep = ";")
 Orders <- read.csv("~/UbiqumR/C2_T3_MarketBasket/Data/Raw/orders_.csv", sep = ";")
-Transactions <- read.csv("~/UbiqumR/C2_T3_MarketBasket/Data/Raw/trans_.csv")
-
+Transactions <- read.csv("~/UbiqumR/C2_T3_MarketBasket/Data/Raw/trans_.csv", sep = ";")
 
 
 #understanding columns
@@ -153,10 +152,14 @@ getwd()
 #I want to keep just id_order and sku
 trans_id <- total_data[, -c(2, 4, 5, 6, 7, 8)]
 
+#exportar coluna com skus
 total_data %>%
-  # filter() %>% 
   select(sku) %>% 
   write_csv(path = "trans_id.csv")
+
+#só selecionar
+total_data2 <- total_data %>%
+  select(sku)
 
 #export
 write.csv(trans_id, file = "trans_id.csv")

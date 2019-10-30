@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/544550/be99b126f33846e39ca0987a9aa4377f
+bundleId: https://api.rpubs.com/api/v1/document/544550/be99b126f33846e39ca0987a9aa4377f
+url: http://rpubs.com/leticiaamarcal/544550
+when: 1572430823.67121
