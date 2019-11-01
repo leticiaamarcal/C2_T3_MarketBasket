@@ -13,7 +13,8 @@ library(tidyr)
 library(dplyr)
 library(devtools)
 library(StandardizeText)
-library(ggplot2)
+library(scales)
+library(grid)
 
 #upload arquivo
 sku_brand <- read_csv2("C:/Users/letic/Documents/UbiqumR/C2_T3_MarketBasket/Data/Raw/products_with_brands.csv")
@@ -22,6 +23,9 @@ inStore <- read.transactions("Data/Raw/trans_no_shipped.csv", sep = ",")
 Products <- read.csv("~/UbiqumR/C2_T3_MarketBasket/Data/Raw/lineitems_.csv", sep = ";")
 Orders <- read.csv("~/UbiqumR/C2_T3_MarketBasket/Data/Raw/orders_.csv", sep = ";")
 Transactions <- read.csv("~/UbiqumR/C2_T3_MarketBasket/Data/Raw/trans.csv", sep = ";")
+trans_translated <- readxl::read_xlsx("Data/Raw/products_translated.xlsx")
+
+trans_translated$price <- as.numeric(trans_translated$price)
 
 #get transactions that are completed
 orders_completed <- Orders %>% 
@@ -63,9 +67,135 @@ colnames(total_data)[3] <- 'sku'
 total_data <- total_data %>% 
   mutate(created_date = lubridate::as_datetime(created_date))
 
+#total_paid x date
 total_data %>% 
-  mutate(created_date = lubridate::as_datetime(created_date)) %>% 
-  group_by(date = lubridate::date(created_date)) %>% 
-  summarise(sum = sum(total_paid)) %>% 
-  ggplot(aes(x = date, y = sum)) +
-  geom_line()
+  group_by(date = created_date) %>% 
+  summarise(paid = sum(total_paid)) %>% 
+  ggplot() + 
+  geom_line(aes(x = date, y = paid)) +
+  scale_y_continuous(labels = dollar)
+  
+#creating data frame with brand, category, price to boxplot
+brand_cat <- sku_brand %>% 
+  left_join(sku_category)
+
+temp <- Products %>% 
+  left_join(brand_cat, by = "sku") %>% 
+  filter(id_order %in% orders_completed$id_order,
+         !is.na(brand),
+         !is.na (category))
+         
+#boxplot category x unit_price
+temp %>% 
+ggplot(aes(x = category, y = unit_price)) + geom_boxplot()
+
+
+#changing the file / not good result
+trans_translated %>% 
+  left_join(brand_cat) %>% 
+  filter(!is.na(category)) %>% 
+  ggplot() +
+  geom_boxplot(aes(x = category, y = price)) +
+  scale_y_continuous(labels = dollar)
+
+
+#creat dataframe
+temp2 <- trans_translated %>% 
+  left_join(brand_cat) %>% 
+  filter(!is.na(category))
+
+
+#boxplot brand x unit_price
+Products %>% 
+  left_join(brand_cat, by = "sku") %>% 
+  filter(id_order %in% orders_completed$id_order) %>% 
+  ggplot(aes(x = category, y = unit_price)) + geom_boxplot()
+
+
+#######-------
+#tentativa 2
+
+#criando dataset que vamos usar
+category_DF <- Products %>% 
+  left_join(sku_category, by = "sku") %>% 
+  left_join(Orders %>% select(state, id_order), by = "id_order") %>% 
+  filter(state == "Completed")  %>% 
+  mutate(total_price = unit_price * product_quantity) %>% 
+  mutate(category = if_else(is.na(category), "unknown",category))
+
+#categorias relevantes
+category_relevant <- category_DF %>% 
+  group_by(category) %>% 
+  summarise(amount = sum(total_price)) %>% 
+  arrange(desc(amount))
+
+#classificar os fatores de mais vendas para menos vendas
+category_DF$category <- factor(category_DF$category, 
+                                     levels = category_relevant$category)
+
+#boxplot - category
+category_DF %>% 
+  ggplot(aes(x = reorder(category, unit_price), y = unit_price)) + geom_boxplot() +
+  coord_flip()
+
+#bar chart / várias tentativas
+category_DF %>%  
+  ggplot(aes(x = category, y = unit_price)) + geom_col()+
+  scale_y_continuous(labels = dollar) +
+  coord_flip() 
+
+#esta
+category_relevant %>%  
+  ggplot(aes(x = reorder(category, amount), y = amount)) + geom_col() + 
+  scale_y_continuous(labels = dollar) +
+  coord_flip() 
+
+category_DF %>% 
+  arrange(desc(unit_price)) %>% 
+  ggplot(aes(x = category, y = unit_price)) + geom_col()+
+  scale_y_continuous(labels = dollar) +
+  coord_flip()
+ 
+
+#criar dataset brand
+brand_DF <- Products %>% 
+  left_join(sku_brand, by = "sku") %>% 
+  left_join(Orders %>% select(state, id_order), by = "id_order") %>% 
+  filter(state == "Completed") %>% 
+  mutate(total_price = unit_price * product_quantity) %>% 
+  mutate(brand = if_else(is.na(brand), "unknown",brand))
+
+#marcas relevantes
+brand_relevant <- brand_DF%>% 
+  group_by(brand) %>% 
+  summarise(sum = sum(total_price)) %>% 
+  arrange(desc(sum))
+
+#classificar os fatores de mais vendas para menos vendas
+brand_DF$brand <- factor(brand_DF$brand, 
+                            levels = brand_relevant$brand)
+
+
+important_brands <- brand_relevant %>%  
+  head(15)
+important_brands %>% 
+  ggplot(aes(x = reorder(brand, unit_price), y = unit_price)) +
+  geom_col()+
+  scale_y_continuous(labels = dollar) +
+  coord_flip() 
+
+#boxplot
+brand_DF %>% 
+  filter(brand %in% important_brands$brand) %>% 
+  ggplot(aes(x = reorder(brand, unit_price), y = unit_price)) + 
+  geom_boxplot() +
+  coord_flip()
+
+
+  
+
+
+  
+  
+  
+       

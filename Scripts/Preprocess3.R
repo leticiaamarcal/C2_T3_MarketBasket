@@ -16,7 +16,7 @@ library(StandardizeText)
 library(ggplot2)
 
 #upload arquivo
-trans <- read.transactions(file = "Data/Raw/trans.csv", sep = ",")
+trans <- read.transactions(file = "Data/Raw/trans_.csv", sep = ",")
 sku_brand <- read_csv2("C:/Users/letic/Documents/UbiqumR/C2_T3_MarketBasket/Data/Raw/products_with_brands.csv")
 sku_category <- read_csv2("Data/Raw/products_with_category.csv")
 inStore <- read.transactions("Data/Raw/trans_no_shipped.csv", sep = ",")
